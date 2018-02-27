@@ -1,0 +1,31 @@
+Segment,Fuel_Type,Fuel_gas,Fuel_Elec,Incentive,Delta,Oper
+Subcompact ICEV ,ICEV,0.031,0,0,"5,758",3556.266414
+Compact ICEV ,ICEV,0.0299,0,0,"13,595",3501.757134
+Mid ICEV,ICEV,0.0345,0,0,"18,805",3553.206161
+ Large ICEV,ICEV,0.0419,0,0,"24,107",4068.757395
+Near & Entry luxury ICEV ,ICEV,0.0325,0,0,"37,881",7158.042963
+Luxury and High End Sports ICEV ,ICEV,0.0435,0,0,"54,129",9428.594375
+Sports ICEV,ICEV,0.0405,0,0,"16,506",3968.962334
+Compact & Subcompact SUV ICEV,ICEV,0.0331,0,0,"19,446",4208.083901
+Mid & Large SUV ICEV ,ICEV,0.041,0,0,"27,900",4214.969707
+Luxury Subcompact & Compact SUV ICEV ,ICEV,0.0423,0,0,"34,599",7310.802005
+Luxury Mid & Large SUV ICEV ,ICEV,0.0463,0,0,"43,996",7453.556884
+Subcompact Non-plugin Hybrid,Hybrid,0.0217,0,0,"8,163",3349.905657
+Compact Non-plugin Hybrid,Hybrid,0.0179,0,0,17323.94393,3538.386667
+Mid Non-plugin hybrid,Hybrid,0.0231,0,0,"17,524",3596.111736
+Large Non-plugin Hybrid,Hybrid,0.025,0,0,"24,135",4254.467092
+Luxury Hybrid Non Plug in,Hybrid,0.0242,0,0,"26,451",4905.713788
+Compact SUV Non Plug in Hybrid,Hybrid,0.0313,0,0,"22,008",4810.375157
+Mid SUV  Non-plugin hybrid,Hybrid,0.0345,0,0,"27,250",4212.425483
+Luxury SUV  Non-plugin hybrid,Hybrid,0.038,0,0,"33,109",6761.601723
+Compact Plug in Hybrid ,Phybrid,0.0245,0.3197,"8,150","18,458",3818.167188
+Mid  Plug in Hybrid,Phybrid,0.0237,0.337,"5,692","19,365",3695.358689
+Sports Plug in Hybrid,Phybrid,0.036,0.43,"5,293","111,993",5545.340238
+Luxury Plug in Hybrid,Phybrid,0.0297,0.4202,"5,917","27,961",7120.803452
+Luxury High End Plug in Hybrid,Phybrid,0.038,0.59,"4,500","56,147","26,074"
+Luxury Mid SUV Plug in Hybrid,Phybrid,0.0422,0.617,"6,374","56,541",6201.451528
+Subcompact EV,EV,0,0.296,"10,000","9,601",2902.571802
+Compact EV,EV,0,0.2958,"10,000",17137.27839,3062.490498
+Luxury EV,EV,0,0.2884,"10,000","30,701",5542.118109
+Luxury High End EV,EV,0,0.32,"10,000","59,901",5542.118109
+Luxury SUV EV,EV,0,0.32,"10,000","68,020",5542.118109
