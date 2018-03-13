@@ -1,6 +1,8 @@
 
 library(shiny)
 library(readr)
+library(shinydashboard)
+
 
 # seperate normal distribution
 # calculate the environmental benefits, health benenfits. 
@@ -8,86 +10,118 @@ library(readr)
 
 
 # Define UI for app that draws a bar graph ----
-ui <-  fluidPage(
-  
-  # App title ----
-  titlePanel("EV Incentive program"),
-  
-  sidebarLayout(  
-    sidebarPanel(
-    selectInput(inputId="Agency", "Agency (region)",
-           choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsular"="Peninsular", "Redwood Coast"="Redwood Coast", "Sillcon Valley"="Sillcon Valley", "Sonoma"="Sonoma"), selected = "Sonoma"),
-    numericInput(inputId ="Budget", "Total Incentive Budget", 
-                        value = 1500000),
-    selectInput(inputId="Year","Year from 2016 to 2030",
-                choices = list(2016,2017,2018,2019,2020,2021,2022,2023, 2024,2025,2026,2027,2028,2029,2030), selected = 2017),
-    numericInput(inputId ="EV_rebate","Electric Vehicle (BEV) Incentive", 
-                        value = 2000),
-    numericInput(inputId ="PHEV_rebate", "Electric Vehicle (PHEV) Incentive",  value = 500),
-    numericInput(inputId ="Energymix1", "Energy Mix - Coal (%)", 
-                      value = 0),
-    numericInput(inputId ="Energymix2", "Energy Mix - Natural Gas (%)", 
-                      value = 0),
-    numericInput(inputId ="Energymix3","Energy Mix - Geothermal (%)", 
-                      value = 8),
-    numericInput(inputId ="Energymix4","Energy Mix - Petroleum (%)", 
-                      value = 0),
-    numericInput(inputId ="Energymix5","Energy Mix - Large Hydro (%)", 
-                      value = 49),
-    numericInput(inputId ="Energymix6","Energy Mix - Biomass (%)", 
-                      value = 0),
-    numericInput(inputId ="Energymix7", "Energy Mix - Biogas (%)", 
-                 value = 0),
-    numericInput(inputId ="Energymix8", "Energy Mix - Eligible Renewable (%)", 
-                      value = 33),
-    numericInput(inputId ="Energymix9","Energy Mix - Nuclear (%)", 
-                      value = 0),
-    numericInput(inputId ="Energymix10", "Energy Mix - Other (%)", 
-                      value = 10), 
-    selectInput(inputId ="Lux_BEV", "Include incentive for High-end BEV (e.g. Tesla)", choices = list("Yes"=1, "No"=2), selected = 1),
-    selectInput(inputId ="Lux_PHEV", "Include incentive for Luxury PHEV (e.g. Audi A3 e-tron)", choices = list("Yes"=1, "No"=2), selected = 1),
-    selectInput(inputId ="Fed", "Federal Tax Credit Availability", choices = list("Yes"=1, "No"=2), selected = 1),
-    selectInput(inputId ="CVRP", "Clean Vehicle Rebate Project (CVRP) Availability", choices = list("Yes"=1, "No"=2), selected = 1),
-    numericInput(inputId ="Discount_EV","Additional discount BEV (e.g. dealer discount)", 
-                 value = 2500),
-    numericInput(inputId ="Discount_PHEV", "Additional discount PHEV (e.g. dealer discount)",
-                 value = 0), 
-    numericInput(inputId ="Length", "Program Length (month)", 
-                 value = 4),
-    numericInput(inputId ="Staff", "Number of staff reqired", 
-                 value = 5),
-    numericInput(inputId ="Admincost", "Administrative cost per person per year (dollar)", 
-                 value = 124000),
-    numericInput(inputId ="Impcost", "Additional implementation cost (per program)", 
-                 value = 80000),
-    sliderInput(inputId ="Profit", "Profit portion (%)",
-                min = 0, max = 100, value = 10),
-    sliderInput(inputId ="Marketing", "Marketing Effectiveness (%)",
-                min = 0, max = 100, value = 80),
-    numericInput(inputId ="Gas", "California Average Gasoline Price ($/gallon)", 
-                 value = 2.78),
-    numericInput(inputId ="Elec", "California Average Electricity Rate ($/kwh)", 
-                 value = 0.19),
-    numericInput(inputId ="Rebound", "Rebound Effect (%)", value = 3),
-    numericInput(inputId ="Trans", "Transmission Losses (%)", value = 5),
-    numericInput(inputId ="Discount", "Discount rate (%)", value = 10),
-    numericInput(inputId ="carbon_p", "Carbon Value (dollar per ton CO2e)", value = 13),    
-    selectInput(inputId="Impact", "Value of Health Impact Estimates", choices = list("Low","Mid","High"), selected = "High")), 
-mainPanel(
-  tableOutput("table1"), 
-  plotOutput("plot1"),
-  tableOutput("table2"),
-  plotOutput("plot2")
-)))
+ui <-  dashboardPage(
+  dashboardHeader(title="EV Incentive Program Toolkit"),
+  dashboardSidebar(
+    sidebarMenu(
+      
+      menuItem("Model Overview", tabName = "tab_1"),
+      menuItem("User Guide", tabName = "tab_2"), 
+      menuItem("Toolkit", tabName = "tab_3")
+      
+    )), 
+  dashboardBody(tabItems(
+    tabItem(tabName = "tab_1",
+            fluidPage(h3("Model Overview"),
+                      box(width = 12, h4("Introduction"),p("This is a tool meant to help Community Choice Energy Agencies predict the costs and benefits associated with offering an incentive program to subsidize residents’ purchases of battery electric vehicles (BEVs) or plug-in hybrid electric vehicles (PHEVs). Based on incentive amount, total budget, and a variety of other program and agency specifications, the model predicts the number of vehicle purchases that will be directly caused by an incentive program, then calculates associated greenhouse gas (GHG) emissions reductions and health impacts.")
+                      ),
+                      box(width = 12, h4("Using the Toolkit"),p("To use this model, at a minimum, users will need to enter values into the Primary Inputs section of the Toolkit tab. This section includes: Agency (Region), Total Incentives Budget, Year, Electric Vehicele (BEV) Incentive, Plug-in Hybrid (PHEV) Incentive, and Energy mix, and incentive amounts. There are a variety of additional inputs that allow users to users add further program specifications as appropriate. A detailed breakdown of all available input options is included in the User Guide tab.")
+                      ),
+                      box(width = 12, h4("Results"), p("Once the user has filled in the appropriate inputs and run the model, results will be displayed on the right-hand side of the Toolkit tab. The main results show the predicted participation in the incentive program for EV and PHEV incentives. These results show the total number of predicted incentives redeemed, and the predicted number of sales directly caused by the incentive. The model then displays predicted health, greenhouse gas, and monetary impacts associated with the incentive program. ")
+                      ))) , 
+    tabItem(tabName = "tab_2",
+            fluidPage(h3("User Guide"),
+                      box( width = 12, h4("Primary Inputs"),p("These inputs represent the minimum amount of information necessary to run the model. They are:"), 
+                           br(),tags$div(tags$ul(tags$li("Agency (Region): Which CCE Agency will be running the program. The model uses this) information to set the correct population level and predict local emissions impacts."), 
+                                                 tags$li("Total Incentives Budget: The total available budget for providing EV and PHEV incentives."),
+                                                 tags$li("Year: The year that the incentives program will run."),
+                                                 tags$li("Electric Vehicle (BEV) Incentive: The dollar amount that the agency will offer for each electric vehicle purchase."), 
+                                                 tags$li("Plug-in Hybrid (PHEV) Incentive: The dollar amount that the agency will offer for each plug-in hybrid purchase."), 
+                                                 tags$li("Energy mix: These values specify the composition of the energy mix that is used to charge electric vehicles."),  style = "font-size: 13px"))),    box( width = 12, h4("Incentive Details"),p("These allow agencies to add further details to their incentive offerings. These are included with
+                                                                                                                                                                                                                                                       general default values that can be altered if necessary to match the agency’s needs."), br(),tags$div(tags$ul(tags$li("Include incentive for High end BEV and luxury PHEV: These are Yes/No inputs set at No by default. If switched to Yes, the model will include Tesla and luxury plug-in hybrid vehicles among those that receive their respective incentives."), 
+                                                                                                                                                                                                                                                                                                                                                                     tags$li("Federal Tax Credit Availability/Clean Vehicle Rebate Project Availability: These are Yes/No inputs set at Yes by default. If switched to No the model will remove that credit or rebate from its calculations of vehicle cost."), 
+                                                                                                                                                                                                                                                                                                                                                                     tags$li("Additional Discount EV/Plug-in: These inputs give the user the option to add additional discounts on the cost of BEVs or PHEVs. These are not included in the agency’s overall program costs and may represent discounts offered by vehicle dealers or manufacturers. They benefit the customer but are not costs incurred by the agency.")),  style = "font-size: 13px")),
+                      box( width = 12, h4("Program Details"), p("These allow the user to add details about their program, including administrative costs and program length. Defaults are provided based on the pilot incentive program that Sonoma Clean Power ran in 2016. Inputs include:"), br(), tags$div(tags$ul(tags$li("Program length: The number of months that the incentive program will run, with the default set at 12."), tags$li("Number of staff required: The number of full-time employees needed to run the program."), tags$li("Administrative costs per person: The salary and administrative costs per full time employee working on the program."), tags$li("Additional implementation costs: Any additional costs to run the program that the user anticipates. Defaults have been set based on the costs to run Sonoma Clean Power’s pilot EV program."),tags$li("Percent Net Revenue: This input allows the user to set the portion of electricity sales that goes to revenues with a default set at 10%."), tags$li("Marketing effectiveness: This input represents a way to account for the role of marketing on influencing program effectiveness. The user may input the percentage of  eligible customers they expect will be aware of the program being offered. This percentage directly modifies the predicted number of rebates redeemed. Because this only modifies the number of people aware of available discounts, it does not take into account marketing that changes the likelihood of customers taking advantage of the discounts (i.e. marketing that is more or less persuasive).", footer = NULL, status = NULL,solidHeader = FALSE, background = NULL, height = NULL, collapsible = FALSE, collapsed = FALSE)),  style = "font-size: 13px")
+                      ))), 
+    tabItem(tabName ="tab_3",
+            fluidPage(
+              titlePanel("To get results, click Calculate button and wait"),
+              sidebarLayout(  
+                sidebarPanel(
+                  selectInput(inputId="Agency", "Agency (region)",
+                              choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsular"="Peninsular", "Redwood Coast"="Redwood Coast", "Sillcon Valley"="Sillcon Valley", "Sonoma"="Sonoma"), selected = "Sonoma"),
+                  numericInput(inputId ="Budget", "Total Incentive Budget ($)", 
+                               value = 1500000),
+                  selectInput(inputId="Year","Year from 2016 to 2030",
+                              choices = list(2016,2017,2018,2019,2020,2021,2022,2023, 2024,2025,2026,2027,2028,2029,2030), selected = 2017),
+                  numericInput(inputId ="EV_rebate","Electric Vehicle (BEV) Incentive", 
+                               value = 2000),
+                  numericInput(inputId ="PHEV_rebate", "Electric Vehicle (PHEV) Incentive",  value = 1000),
+                  numericInput(inputId ="Energymix1", "Energy Mix - Coal (%)", 
+                               value = 0),
+                  numericInput(inputId ="Energymix2", "Energy Mix - Natural Gas (%)", 
+                               value = 0),
+                  numericInput(inputId ="Energymix3","Energy Mix - Geothermal (%)", 
+                               value = 8),
+                  numericInput(inputId ="Energymix4","Energy Mix - Petroleum (%)", 
+                               value = 0),
+                  numericInput(inputId ="Energymix5","Energy Mix - Large Hydro (%)", 
+                               value = 49),
+                  numericInput(inputId ="Energymix6","Energy Mix - Biomass (%)", 
+                               value = 0),
+                  numericInput(inputId ="Energymix7", "Energy Mix - Biogas (%)", 
+                               value = 0),
+                  numericInput(inputId ="Energymix8", "Energy Mix - Eligible Renewable (%)", 
+                               value = 33),
+                  numericInput(inputId ="Energymix9","Energy Mix - Nuclear (%)", 
+                               value = 0),
+                  numericInput(inputId ="Energymix10", "Energy Mix - Other (%)", 
+                               value = 10), 
+                  selectInput(inputId ="Lux_BEV", "Include incentive for High-end BEV (e.g. Tesla)", choices = list("Yes"=1, "No"=2), selected = 2),
+                  selectInput(inputId ="Lux_PHEV", "Include incentive for Luxury PHEV (e.g. Audi A3 e-tron)", choices = list("Yes"=1, "No"=2), selected = 2),
+                  selectInput(inputId ="Fed", "Federal Tax Credit Availability", choices = list("Yes"=1, "No"=2), selected = 1),
+                  selectInput(inputId ="CVRP", "Clean Vehicle Rebate Project (CVRP) Availability", choices = list("Yes"=1, "No"=2), selected = 1),
+                  numericInput(inputId ="Discount_EV","Additional discount BEV (e.g. dealer discount)", 
+                               value = 0),
+                  numericInput(inputId ="Discount_PHEV", "Additional discount PHEV (e.g. dealer discount)",
+                               value = 0), 
+                  numericInput(inputId ="Length", "Program Length (month)", 
+                               value = 4),
+                  numericInput(inputId ="Staff", "Number of staff reqired", 
+                               value = 5),
+                  numericInput(inputId ="Admincost", "Administrative Cost ($/person/year)", 
+                               value = 124000),
+                  numericInput(inputId ="Impcost", "Additional Implementation Costs ($)", 
+                               value = 80000),
+                  sliderInput(inputId ="Profit", "Profit portion (%)",
+                              min = 0, max = 100, value = 10),
+                  sliderInput(inputId ="Marketing", "Marketing Effectiveness (%)",
+                              min = 0, max = 100, value = 50),
+                  numericInput(inputId ="Gas", "California Average Gasoline Price ($/gallon)", 
+                               value = 2.78),
+                  numericInput(inputId ="Elec", "California Average Electricity Rate ($/kwh)", 
+                               value = 0.19),
+                  numericInput(inputId ="Rebound", "Rebound Effect (%)", value = 3),
+                  numericInput(inputId ="Trans", "Transmission Losses (%)", value = 5),
+                  numericInput(inputId ="Discount", "Discount rate (%)", value = 5),
+                  numericInput(inputId ="carbon_p", "Carbon Value (dollar per ton CO2e)", value = 13),    
+                  selectInput(inputId="Impact", "Value of Health Impact Estimates", choices = list("Low","Mid","High"), selected = "High")), 
+                mainPanel(fluidRow(actionButton("go", "Calculate"),br(),br(), 
+                                   column(12, box(tableOutput("table1"), height = 150, width = 350)),column(12,
+                                                                                                            box(plotOutput("plot1"), height = 420, width = 350)),column(12,
+                                                                                                                                                                        box(tableOutput("table2"), height = 350, width = 350)),column(12,
+                                                                                                                                                                                                                                      box(plotOutput("plot2"), height = 420, width = 350)))
+                )))
+    ))))
 
 server <- function(input, output) {
   
-   TCM <- reactive({
-   Data <- read_csv("Database.csv")
+  TCM <- eventReactive(input$go, {
+    Data <- read_csv("Database.csv")
     Market_Share_Simple <- read_csv("Market_Share_Simple.csv")
     Cost_data <- read_csv("Cost.csv") 
     Projection <- read_csv("Price_Projection.csv")
-    N = 5000 # Number of simulation
+    N = 1000 # Number of simulation
     N_car_model = nrow(Data)# count number of car models
     Need_col = N_car_model+1
     ln_Mean_VMT <- 8.87192821723217 # Mean value of Ln(VTM). THis is because the VTM distribution is lognormal distribution 
@@ -102,7 +136,7 @@ server <- function(input, output) {
     Elec_price <- input$Elec
     Phybrid_Gas_Percentage = 0.6
     Uncertainty = 0.3
-    Year <- input$Year
+    year <- input$Year
     EV_rebate  <- input$EV_rebate
     PHEV_rebate <- input$PHEV_rebate
     Discount_PHEV <- input$Discount_PHEV
@@ -115,6 +149,7 @@ server <- function(input, output) {
     Budget <- input$Budget
     Lux_BEV_rebate <- input$Lux_BEV
     Lux_PHEV_rebate <- input$Lux_PHEV
+    lease <- 0.4
     
     
     # change the total incentive depending on the availability.    
@@ -127,13 +162,13 @@ server <- function(input, output) {
       Cost_data$incen[i] <- ifelse(Fed == 1, Cost_data$Incentive[i],0)
       Cost_data$incen[i] <- ifelse(CVRP == 1,Cost_data$Incentive[i]+2500,Cost_data$Incentive[i])}
     
-    # Calculate the new PHEV and EV price based on year and subtracted the incentive    
+    # Calculate the new PHEV and EV price based on year and subtract the incentive    
     
-    Cost_data$Year_Pur_Cost[72:76]<-Cost_data$Base_Pur_Cost[72:76]*(1-Projection$PHEV[match(Year,Projection$Year)])-Cost_data$incen[72:76]
-    Cost_data$Year_Pur_Cost[77:83]<-Cost_data$Base_Pur_Cost[77:83]*(1-Projection$PHEV[match(Year,Projection$Year)]*0.68)-Cost_data$incen[77:83]
-    Cost_data$Year_Pur_Cost[84:91] <- Cost_data$Base_Pur_Cost[84:91]*(1-Projection$EV[match(Year,Projection$Year)])-Cost_data$incen[84:91]
-    Cost_data$Year_Pur_Cost[92:93] <- Cost_data$Base_Pur_Cost[92:93]*(1-Projection$EV[match(Year,Projection$Year)]*0.681)-Cost_data$incen[92:93]
-    Cost_data$Year_Pur_Cost[94:95] <- Cost_data$Base_Pur_Cost[94:95]*(1-Projection$EV[match(Year,Projection$Year)]*0.96)-Cost_data$incen[94:95]
+    Cost_data$Year_Pur_Cost[72:76]<-Cost_data$Base_Pur_Cost[72:76]*(1-Projection$PHEV[match(year,Projection$Year)])-Cost_data$incen[72:76]
+    Cost_data$Year_Pur_Cost[77:83]<-Cost_data$Base_Pur_Cost[77:83]*(1-Projection$PHEV[match(year,Projection$Year)]*0.68)-Cost_data$incen[77:83]
+    Cost_data$Year_Pur_Cost[84:91] <- Cost_data$Base_Pur_Cost[84:91]*(1-Projection$EV[match(year,Projection$Year)])-Cost_data$incen[84:91]
+    Cost_data$Year_Pur_Cost[92:93] <- Cost_data$Base_Pur_Cost[92:93]*(1-Projection$EV[match(year,Projection$Year)]*0.681)-Cost_data$incen[92:93]
+    Cost_data$Year_Pur_Cost[94:95] <- Cost_data$Base_Pur_Cost[94:95]*(1-Projection$EV[match(year,Projection$Year)]*0.96)-Cost_data$incen[94:95]
     
     # Calculate the total purchase price - incentive + owndership cost
     Cost_data[,8] <- Cost_data[,4]+Cost_data[,5]
@@ -179,14 +214,12 @@ server <- function(input, output) {
     
     # Make a matrix for Total life cycle costs by each segment. 
     TotalCost <- matrix(rep(NA,N*N_car_model),nrow=N, ncol=N_car_model)
-    
     N_ICEV <- sum(Data$Fuel_Type=="ICEV")
     N_Hy <- sum(Data$Fuel_Type=="Hybrid")
-    N_PHy <- sum(Data$Fuel_Type=="Phybrid")-4
+    N_PHy <- 2
     N_PHy_Lux <- 4
-    N_EV <- sum(Data$Fuel_Type=="EV")-2
+    N_EV <- 3
     N_EV_Lux <- 2
-    
     # the "for" functions below are to calculate total costs by each segment. 
     for (i in 1:N){
       for (j in 1:(N_ICEV+N_Hy)){
@@ -231,9 +264,9 @@ server <- function(input, output) {
     
     
     PHEV_rebate_Lux <-ifelse(Lux_PHEV_rebate==1, PHEV_rebate, 0)
-    Discount_PHEV_Lux<-ifelse(Lux_PHEV_rebate==1, PHEV_rebate, 0)
+    Discount_PHEV_Lux<-ifelse(Lux_PHEV_rebate==1, Discount_PHEV, 0)
     EV_rebate_Lux<-ifelse(Lux_BEV_rebate==1, EV_rebate, 0)
-    Discount_EV_Lux<-ifelse(Lux_BEV_rebate==1, EV_rebate, 0)
+    Discount_EV_Lux<-ifelse(Lux_BEV_rebate==1, Discount_EV, 0)
     
     # Calculate the total life cycle costs but with rebates    
     TotalCost2 <- matrix(rep(NA,N*N_car_model),nrow=N, ncol=N_car_model)
@@ -255,7 +288,7 @@ server <- function(input, output) {
         TotalCost2[i,j] <- Data$Oper[j]*VMT[i]/15000+VMT[i]*Data$Fuel_Elec[j]*Elec_price/discount*(1-1/(1+discount)^years_own)-Delta_matrix[i,j]+Cost_matrix[i,j]-EV_rebate_Lux-Discount_EV_Lux
       }
     }
- 
+    
     # Make a matrix and choose the minimum cost option. 
     Decision_Matrix2 <- matrix(rep(NA,N*N_car_model),nrow=N, ncol=N_car_model) 
     
@@ -295,30 +328,31 @@ server <- function(input, output) {
     
     
     if (Lux_PHEV_rebate == 1){
-      Base_PHEV <- sum(Marketshare_Table[5,20:21])
-      Predict_PHEV <- sum(Marketshare_Table2[5,20:21])
-    } else {
       Base_PHEV <- sum(Marketshare_Table[5,20:25])
       Predict_PHEV <- sum(Marketshare_Table2[5,20:25])
+    } else {
+      Base_PHEV <- sum(Marketshare_Table[5,20:21])
+      Predict_PHEV <- sum(Marketshare_Table2[5,20:21])
     }
     
     
     Prob_demand_EV <- ifelse((PHEV_rebate==0)&(Discount_PHEV==0), Prob_demand_EV <- 1, Prob_demand_EV <- Predict_EV/(Predict_EV+Predict_PHEV))
     Prob_demand_PHEV <- 1-Prob_demand_EV
     
-    max_EV <- Prob_demand_EV*Budget/EV_rebate
-    max_PHEV <- ifelse(PHEV_rebate==0,0.001,Budget/PHEV_rebate*Prob_demand_PHEV)
+    max_total <- Budget/(EV_rebate*Prob_demand_EV+PHEV_rebate*Prob_demand_PHEV)
+    max_EV <- Prob_demand_EV*max_total
+    max_PHEV <- Prob_demand_PHEV*max_total
     
-    Final_EV <- ifelse(Predict_EV*P_sales>max_EV, max_EV, Predict_EV*P_sales)
-    Final_PHEV <- ifelse(Predict_PHEV*P_sales>max_PHEV, max_PHEV, Predict_PHEV*P_sales)
+    Final_EV <- ifelse((Predict_EV*P_sales*(1+(lease)/(1-lease)))>max_EV, max_EV, Predict_EV*P_sales*(1+(lease)/(1-lease)))
+    Final_PHEV <- ifelse((Predict_PHEV*P_sales)>max_PHEV, max_PHEV, Predict_PHEV*P_sales)
     
     # Present the estimated results in the table. 
     FinalTable <- matrix(c(Final_EV,Final_PHEV,ifelse((Predict_EV-Base_EV)/Predict_EV*Final_EV>0,(Predict_EV-Base_EV)/Predict_EV*Final_EV, 0),ifelse((Predict_PHEV-Base_PHEV)/Predict_PHEV*Final_PHEV>0,(Predict_PHEV-Base_PHEV)/Predict_PHEV*Final_PHEV,0)), nrow=2, ncol=2)
     colnames(FinalTable)<-c("Total participation","Participation caused by incetive")
     rownames(FinalTable)<-c("EV","PHEV")
     print(FinalTable)
-    })
-
+  })
+  
   BC <- reactive({
     TCM <- TCM()
     Aveg_VTM <- 11244
@@ -397,37 +431,43 @@ server <- function(input, output) {
     Total_rebates <- EV_rebate*TCM[1,2]+PHEV_rebate*ifelse(TCM[2,2]<=0, 0, TCM[2,2])
     Revenue <- Elec_price*(Aveg_VTM*Efficiency*TCM[1,2]*(1+Rebound)/(1+Trans)+Aveg_VTM*Efficiency*PHEV_gas_perc*TCM[2,2]*(1+Rebound)/(1+Trans))/discount*(1-1/(1+discount)^Lifetime)*input$Profit/100
     BCR <- (GHG_benefits+H_impact+Revenue)/(Admin_cost+Imp_cost+Total_rebates)
-    Benefit <- matrix(c(GHG_benefits, H_impact, Revenue,Total_GHG, Admin_cost, Imp_cost, Total_rebates, BCR),nrow=4, ncol=2)
+    Cost_GHG <- (Admin_cost+Imp_cost+Total_rebates)/Total_GHG
+    Benefit <- matrix(c(GHG_benefits, H_impact, Revenue,Total_GHG, Cost_GHG, Admin_cost, Imp_cost, Total_rebates, BCR),nrow=5, ncol=2)
     colnames(Benefit)<- c("Benefits", "Costs")
-    rownames(Benefit)<- c("a","b","c","d")
+    rownames(Benefit)<- c("a","b","c","d","e")
     
     return(Benefit)
   })   
-   
-    output$table1 <- renderTable({
+  
+  output$table1 <- renderTable({
     TCM <- TCM()
     FinalTable <- as.data.frame(TCM)  
-    }, rownames = TRUE, colnames = TRUE)
-
+  }, rownames = TRUE, colnames = TRUE, digits=0)
+  
   output$plot1 <- renderPlot({
     TCM <- TCM()
     Finalsale <- as.data.frame(TCM)
     Finalsale[,3] <- TCM[,1]-TCM[,2]
     Final <- t(Finalsale[1:2,2:3])
-    barplot(Final,col=colors()[c(12,15)], main="Number of rebates redeemed by incentive", ylab = "Number of rebates redeemed")
+    barplot(Final,col=colors()[c(12,15)], main="Number of rebates redeemed", ylab = "Number of rebates redeemed")
+    legend("topright",legend = c("Caused by incentive", "Remaining"),fill = colors()[c(12,15)], box.lwd = 0, box.col = "white", bg = "white")
   })
   
   output$table2 <- renderTable({ 
     BC <- BC()
-    Total_Value <- c(BC[4,1],BC[1,1],BC[2,1],BC[3,1],BC[1,2],BC[2,2],BC[3,2],BC[4,2])
-    Cost_Benefit <- as.data.frame(Total_Value, row.names = c("GHG Reduction (ton)","GHG reduction benefits (dollar)", "Health Benefits (dollar)","Revenue (dollar)","Administrative Cost (dollar)", "Implementation Cost (dollar)", "Total rebates costs (dollar)","Benefit Cost Ratio"))
-  },rownames = TRUE, colnames=TRUE)
+    Total_Value <- c(BC[4,1],BC[1,1],BC[2,1],BC[3,1],BC[1,2],BC[2,2],BC[3,2],BC[4,2],BC[5,1])
+    Cost_Benefit <- as.data.frame(Total_Value, row.names = c("GHG Reduction (ton)","GHG reduction benefits (dollar)", "Health Benefits (dollar)","Revenue (dollar)","Administrative Cost (dollar)", "Implementation Cost (dollar)", "Total rebates costs (dollar)","Benefit Cost Ratio","Cost of GHG reduction (dollar/tonCO2e)"))
+  },rownames = TRUE, colnames=TRUE, digits=2)
   
   output$plot2 <- renderPlot({
     BC <-BC()
-    barplot(BC[1:3,1:2],col=colors()[c(13,11,10)], main="Overall Benefits and Costs", ylab = "Monetary Value (dollar)")
+    par(mar=c(8.1, 4.1, 4.1, 4.1), xpd=TRUE)
+    barplot(BC[1:3,1:2],col=colors()[c(13,11,10,1,2,3)], main="Overall Benefits and Costs", ylab = "Monetary Value (dollar)")
+    legend(x="bottomleft",inset=c(0.15,-0.4),legend = c("Revenue","Health", "GHG Reduction"),fill = colors()[c(10,11,13)], box.lwd = 0, box.col = "white", bg = "white")
+    legend("bottomright",inset=c(0.12,-0.4),legend = c("Total Rebates","Implementation","Administration"),fill = colors()[c(10,11,13)], box.lwd = 0, box.col = "white", bg = "white")
+    
   })
-
+  
 }
 
 shinyApp(ui, server) 
