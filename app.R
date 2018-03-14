@@ -2,7 +2,8 @@
 library(shiny)
 library(readr)
 library(shinydashboard)
-
+library(reshape2)
+library(ggplot2)
 
 # seperate normal distribution
 # calculate the environmental benefits, health benenfits. 
@@ -106,14 +107,13 @@ ui <-  dashboardPage(
                   numericInput(inputId ="Discount", "Discount rate (%)", value = 5),
                   numericInput(inputId ="carbon_p", "Carbon Value (dollar per ton CO2e)", value = 13),    
                   selectInput(inputId="Impact", "Value of Health Impact Estimates", choices = list("Low","Mid","High"), selected = "High")), 
-                mainPanel(fluidRow(actionButton("go", "Calculate"),br(),br(), 
-                                   column(12, box(tableOutput("table1"), height = 150, width = 350)),column(12,
-                                                                                                            box(plotOutput("plot1"), height = 420, width = 350)),column(12,
-                                                                                                                                                                        box(tableOutput("table2"), height = 350, width = 350)),column(12,
-                                                                                                                                                                                                                                      box(plotOutput("plot2"), height = 420, width = 350)))
+mainPanel(fluidRow(actionButton("go", "Calculate"),br(),br(),
+        column(12, box(h4("The Estimated Number of sales"), tableOutput("table1"), height = 150, width = 350)),
+        column(12, box(plotOutput("plot1"), height = 420, width = 350)),
+        column(12, box(h4("Total Benefits and Costs"),tableOutput("table2"), height = 370, width = 350)),
+        column(12, box(plotOutput("plot2"), height = 420, width = 350)))
                 )))
     ))))
-
 server <- function(input, output) {
   
   TCM <- eventReactive(input$go, {
@@ -448,9 +448,19 @@ server <- function(input, output) {
     TCM <- TCM()
     Finalsale <- as.data.frame(TCM)
     Finalsale[,3] <- TCM[,1]-TCM[,2]
-    Final <- t(Finalsale[1:2,2:3])
-    barplot(Final,col=colors()[c(12,15)], main="Number of rebates redeemed", ylab = "Number of rebates redeemed")
-    legend("topright",legend = c("Caused by incentive", "Remaining"),fill = colors()[c(12,15)], box.lwd = 0, box.col = "white", bg = "white")
+    Final <- (Finalsale[1:2,2:3])
+    colnames(Final) <-c("Remaining","Caused by incentive")
+    DF <- data.frame(Final)
+    DF$Type <- c("EV","PHEV")
+    DF1 <- melt(DF, id.var="Type")
+    library(ggplot2)
+    ggplot(DF1, aes(x = Type, y = value, fill = variable)) + 
+      geom_bar(stat = "identity")+
+      ggtitle("The Number of EV and PHEV Sales through EV Prrogram")+
+      ylab("Number of Sales")+
+      xlab("")+
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.title=element_blank())
   })
   
   output$table2 <- renderTable({ 
@@ -461,10 +471,20 @@ server <- function(input, output) {
   
   output$plot2 <- renderPlot({
     BC <-BC()
-    par(mar=c(8.1, 4.1, 4.1, 4.1), xpd=TRUE)
-    barplot(BC[1:3,1:2],col=colors()[c(13,11,10,1,2,3)], main="Overall Benefits and Costs", ylab = "Monetary Value (dollar)")
-    legend(x="bottomleft",inset=c(0.15,-0.4),legend = c("Revenue","Health", "GHG Reduction"),fill = colors()[c(10,11,13)], box.lwd = 0, box.col = "white", bg = "white")
-    legend("bottomright",inset=c(0.12,-0.4),legend = c("Total Rebates","Implementation","Administration"),fill = colors()[c(10,11,13)], box.lwd = 0, box.col = "white", bg = "white")
+    DF <- matrix(rep(0,12),nrow=2,ncol=6)
+    DF[1,1:3] <- BC[1:3,1]
+    DF[2,4:6] <- BC[1:3,2]
+    colnames(DF) <-c("Benefit:GHG Reduction","Benefit:Health","Benefit:Revenue","Cost:Total Rebates","Cost:Implementation","Cost:Administration")
+    DF <- data.frame(DF)
+    DF$Type <- c("Benefits","Costs")
+    DF1 <- melt(DF, id.var="Type")
+    ggplot(DF1, aes(x = Type, y = value, fill = variable)) + 
+      geom_bar(stat = "identity")+
+      ggtitle("Overall Benefits and Costs")+
+      ylab("Monetary Value (dollar)")+
+      xlab("")+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                      panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.position="bottom", legend.title=element_blank())+
+      guides(fill=guide_legend(nrow=2,byrow=TRUE))
     
   })
   
