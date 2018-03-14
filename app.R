@@ -460,7 +460,7 @@ server <- function(input, output) {
       ylab("Number of Sales")+
       xlab("")+
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-            panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.title=element_blank())
+            panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.title=element_blank(), text = element_text(size=15))
   })
   
   output$table2 <- renderTable({ 
@@ -482,9 +482,11 @@ server <- function(input, output) {
       geom_bar(stat = "identity")+
       ggtitle("Overall Benefits and Costs")+
       ylab("Monetary Value (dollar)")+
-      xlab("")+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                      panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.position="bottom", legend.title=element_blank())+
-      guides(fill=guide_legend(nrow=2,byrow=TRUE))
+      xlab("")+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), plot.title = element_text(hjust = 0.5), legend.position="bottom", legend.title=element_blank(), text = element_text(size=15))+guides(fill=guide_legend(nrow=2,byrow=TRUE))
+    
+    
+    
+    
     
   })
   
