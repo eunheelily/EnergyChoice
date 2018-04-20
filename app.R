@@ -50,7 +50,7 @@ ui <-  dashboardPage(
               sidebarLayout(  
                 sidebarPanel(
                   selectInput(inputId="Agency", "Agency (region)",
-                              choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsular"="Peninsular", "Redwood Coast"="Redwood Coast", "Sillcon Valley"="Sillcon Valley", "Sonoma"="Sonoma"), selected = "Sonoma"),
+                              choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsula"="Peninsula", "Redwood Coast"="Redwood Coast", "Silicon Valley"="Silicon Valley", "Sonoma"="Sonoma"), selected = "Sonoma"),
                   numericInput(inputId ="Budget", "Total Incentive Budget ($)", 
                                value = 1500000),
                   selectInput(inputId="Year","Year from 2016 to 2030",
@@ -108,7 +108,7 @@ ui <-  dashboardPage(
                   numericInput(inputId ="carbon_p", "Carbon Value (dollar per ton CO2e)", value = 13),    
                   selectInput(inputId="Impact", "Value of Health Impact Estimates", choices = list("Low","Mid","High"), selected = "High")), 
 mainPanel(fluidRow(actionButton("go", "Calculate"),br(),br(),
-        column(12, box(h4("The Estimated Number of sales"), tableOutput("table1"), height = 150, width = 350)),
+        column(12, box(h4("The Estimated Number of Sales"), tableOutput("table1"), height = 150, width = 350)),
         column(12, box(plotOutput("plot1"), height = 420, width = 350)),
         column(12, box(h4("Total Benefits and Costs"),tableOutput("table2"), height = 370, width = 350)),
         column(12, box(plotOutput("plot2"), height = 420, width = 350)))
@@ -313,7 +313,7 @@ server <- function(input, output) {
     Autosale = 2086966
     CA_pop = 39250017
     
-    Agency_Pop <- ifelse(Agency== "Apple Valley",72553,ifelse(Agency=="San Francisco",870887, ifelse(Agency=="Lancaster", 160106, ifelse(Agency=="MCE",1537944,ifelse(Agency=="Peninsular",764797,ifelse(Agency=="Redwood Coast",136646,ifelse(Agency=="Sillcon Valley",1919402,ifelse(Agency=="Sonoma",590698,0))))))))
+    Agency_Pop <- ifelse(Agency== "Apple Valley",72553,ifelse(Agency=="San Francisco",870887, ifelse(Agency=="Lancaster", 160106, ifelse(Agency=="MCE",1537944,ifelse(Agency=="Peninsula",764797,ifelse(Agency=="Redwood Coast",136646,ifelse(Agency=="Silicon Valley",1919402,ifelse(Agency=="Sonoma",590698,0))))))))
     P_sales <-Autosale*Agency_Pop/CA_pop/12*Length*Marketing
     
     # Calculate the maximum number of vehicles 
@@ -348,7 +348,7 @@ server <- function(input, output) {
     
     # Present the estimated results in the table. 
     FinalTable <- matrix(c(Final_EV,Final_PHEV,ifelse((Predict_EV-Base_EV)/Predict_EV*Final_EV>0,(Predict_EV-Base_EV)/Predict_EV*Final_EV, 0),ifelse((Predict_PHEV-Base_PHEV)/Predict_PHEV*Final_PHEV>0,(Predict_PHEV-Base_PHEV)/Predict_PHEV*Final_PHEV,0)), nrow=2, ncol=2)
-    colnames(FinalTable)<-c("Total participation","Participation caused by incetive")
+    colnames(FinalTable)<-c("Total Sales","Sales caused by incetive")
     rownames(FinalTable)<-c("EV","PHEV")
     print(FinalTable)
   })
@@ -448,15 +448,17 @@ server <- function(input, output) {
     TCM <- TCM()
     Finalsale <- as.data.frame(TCM)
     Finalsale[,3] <- TCM[,1]-TCM[,2]
-    Final <- (Finalsale[1:2,2:3])
-    colnames(Final) <-c("Remaining","Caused by incentive")
+    Final1 <-Finalsale[1:2,3]
+    Final2 <-Finalsale[1:2,2]
+    Final <- as.data.frame(cbind(Final1, Final2))
+    colnames(Final) <-c("Remaining", "Caused by incentive")
     DF <- data.frame(Final)
     DF$Type <- c("EV","PHEV")
     DF1 <- melt(DF, id.var="Type")
     library(ggplot2)
     ggplot(DF1, aes(x = Type, y = value, fill = variable)) + 
       geom_bar(stat = "identity")+
-      ggtitle("The Number of EV and PHEV Sales through EV Prrogram")+
+      ggtitle("The Number of EV and PHEV Sales through EV Program")+
       ylab("Number of Sales")+
       xlab("")+
       theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),

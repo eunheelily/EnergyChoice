@@ -1,0 +1,12 @@
+name: energychoice
+title:
+username:
+account: energychoice
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 320012
+bundleId: 1329874
+url: https://energychoice.shinyapps.io/energychoice/
+when: 1524246723.77442
+asMultiple: FALSE
+asStatic: FALSE
