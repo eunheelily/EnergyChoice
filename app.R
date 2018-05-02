@@ -4,6 +4,7 @@ library(readr)
 library(shinydashboard)
 library(reshape2)
 library(ggplot2)
+library(bsplus)
 
 # seperate normal distribution
 # calculate the environmental benefits, health benenfits. 
@@ -50,14 +51,33 @@ ui <-  dashboardPage(
               sidebarLayout(  
                 sidebarPanel(
                   selectInput(inputId="Agency", "Agency (region)",
-                              choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsula"="Peninsula", "Redwood Coast"="Redwood Coast", "Silicon Valley"="Silicon Valley", "Sonoma"="Sonoma"), selected = "Sonoma"),
+                              choices = list("Apple Valley" = "Apple Valley", "San Francisco" = "San Francisco", "Lancaster" = "Lancaster", "MCE" ="MCE", "Peninsula"="Peninsula", "Redwood Coast"="Redwood Coast", "Silicon Valley"="Silicon Valley", "Sonoma"="Sonoma"), selected = "Sonoma")%>%
+                    shinyInput_label_embed(
+                      shiny_iconlink() %>%
+                        bs_embed_tooltip(
+                          title = "Which CCE Agency will be running the program. The model uses this information to set the correct population level and predict local emissions impacts.",placement = "right")),
                   numericInput(inputId ="Budget", "Total Incentive Budget ($)", 
-                               value = 1500000),
+                               value = 1500000)%>%
+                    shinyInput_label_embed(
+                      shiny_iconlink() %>%
+                        bs_embed_tooltip(
+                          title = "The total available budget for providing EV and PHEV incentives.",placement = "right")),
                   selectInput(inputId="Year","Year from 2016 to 2030",
-                              choices = list(2016,2017,2018,2019,2020,2021,2022,2023, 2024,2025,2026,2027,2028,2029,2030), selected = 2017),
-                  numericInput(inputId ="EV_rebate","Electric Vehicle (BEV) Incentive", 
-                               value = 2000),
-                  numericInput(inputId ="PHEV_rebate", "Electric Vehicle (PHEV) Incentive",  value = 1000),
+                              choices = list(2016,2017,2018,2019,2020,2021,2022,2023, 2024,2025,2026,2027,2028,2029,2030), selected = 2017)%>%
+                    shinyInput_label_embed(
+                      shiny_iconlink() %>%
+                        bs_embed_tooltip(
+                          title = "The year that the incentives program will run.",placement = "right")),
+                  numericInput(inputId ="EV_rebate","Electric Vehicle (BEV) Incentive",  value = 2000)%>%
+                  shinyInput_label_embed(
+                    shiny_iconlink() %>%
+                      bs_embed_tooltip(
+                        title = "The dollar amount that the agency will offer for each electric vehicle purchase.",placement = "right")),
+                  numericInput(inputId ="PHEV_rebate", "Electric Vehicle (PHEV) Incentive",  value = 1000)%>%
+                    shinyInput_label_embed(
+                      shiny_iconlink() %>%
+                        bs_embed_tooltip(
+                          title = "The dollar amount that the agency will offer for each plug-in hybrid purchase.",placement = "right")),
                   numericInput(inputId ="Energymix1", "Energy Mix - Coal (%)", 
                                value = 0),
                   numericInput(inputId ="Energymix2", "Energy Mix - Natural Gas (%)", 
